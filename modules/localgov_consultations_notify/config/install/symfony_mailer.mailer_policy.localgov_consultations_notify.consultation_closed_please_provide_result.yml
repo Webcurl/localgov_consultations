@@ -1,0 +1,13 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - localgov_consultations_notify
+id: localgov_consultations_notify.consultation_closed_please_provide_result
+configuration:
+  email_body:
+    content:
+      value: "<p>You are listed as responsible for providing results for consultation:<br>{{ consultation_name }}</p>\r\n\r\n<p>The consultation is now closed, please provide as soon as possible the results and conclusions.</p>\r\n\r\n<p>You can access and update the consultation using this link:<br>{{ link }}</p>\r\n\r\n<p>With regards\r\n<br>{{ site_name }} web team</p>"
+      format: email_html
+  email_subject:
+    value: 'Please provide the results for consultation {{ consultation_name }}'

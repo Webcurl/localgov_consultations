@@ -1,0 +1,5 @@
+# Custom library for general purposes.
+localgov_consultations:
+  css:
+    component:
+      css/localgov_consultations.css: {}

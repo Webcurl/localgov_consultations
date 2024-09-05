@@ -1,0 +1,28 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_contact_name
+    - node.type.consultation
+    - taxonomy.vocabulary.consultations_contact_name
+id: node.consultation.field_contact_name
+field_name: field_contact_name
+entity_type: node
+bundle: consultation
+label: 'Contact Name'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:taxonomy_term'
+  handler_settings:
+    target_bundles:
+      consultations_contact_name: consultations_contact_name
+    sort:
+      field: name
+      direction: asc
+    auto_create: false
+    auto_create_bundle: ''
+field_type: entity_reference

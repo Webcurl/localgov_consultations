@@ -1,0 +1,13 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - localgov_consultations_notify
+id: localgov_consultations_notify.consultation_dates_changed
+configuration:
+  email_body:
+    content:
+      value: "<p>You previously registered to receive updates about this consultation: {{ consultation_name }}</p>\r\n\r\n<p>The consultation dates were changed today. Here are the new dates:</p>\r\n\r\n<p>Open: {{ consultation_open_date }}\r\n<br>Close: {{ consultation_close_date }}</p>\r\n\r\n<p>Visit the consultation page to see full details again: {{ link }}</p>\r\n\r\n<p>Didn’t subscribe or no longer need updates on this consultation? <a href=\"{{ unsubscribe_url }}\">Unsubscribe here.</a></p>\r\n<p>Thanks for your interest.</p>"
+      format: email_html
+  email_subject:
+    value: 'Consultation update: change of dates: {{ consultation_name }}'

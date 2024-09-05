@@ -1,0 +1,24 @@
+name: 'localgov_consultations_notify'
+type: module
+description: 'Email notifications about consultations'
+package: Custom
+core_version_requirement: ^10 || ^11
+dependencies:
+  - localgov_consultations:localgov_consultations
+  - mailing_list:mailing_list
+  - symfony_mailer:symfony_mailer
+
+config_devel:
+  - core.entity_form_display.mailing_list_subscription.all_consultations.block
+  - core.entity_form_display.mailing_list_subscription.consultations.block
+  - core.entity_form_display.mailing_list_subscription.consultations.default
+  - core.entity_view_display.mailing_list_subscription.consultations.default
+  - field.field.mailing_list_subscription.consultations.field_node
+  - field.storage.mailing_list_subscription.field_node
+  - mailing_list.mailing_list.all_consultations
+  - mailing_list.mailing_list.consultations
+  - symfony_mailer.mailer_policy.localgov_consultations_notify.consultation_closed_please_provide_result
+  - symfony_mailer.mailer_policy.localgov_consultations_notify.consultation_dates_changed
+  - symfony_mailer.mailer_policy.localgov_consultations_notify.consultation_opened
+  - symfony_mailer.mailer_policy.localgov_consultations_notify.subscribe_confirm
+

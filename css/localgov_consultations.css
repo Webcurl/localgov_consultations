@@ -1,0 +1,54 @@
+.view-id-consultations .view-header {
+  display: flex;
+}
+
+.view-id-consultations .view-header .views-display-link {
+  margin: 0;
+  cursor: pointer;
+  color: var(--tabs-text-color);
+  border: var(--tabs-border);
+  border-color: var(--tabs-border-color);
+  background: var(--tabs-button-bg-color);
+  font-family: var(--tabs-button-font-family);
+  font-size: var(--tabs-button-font-size);
+  padding: 1rem .5rem;
+}
+
+.view-id-consultations .view-header .views-display-link.is-active {
+  border-bottom-color: var(--tabs-button-active-color);
+  background-color: var(--tabs-button-active-color);
+}
+
+.view-id-consultations .view-header {
+  margin-bottom: 2rem;
+}
+
+.consultation.teaser {
+  display: flex;
+  gap: 1rem;
+}
+
+.consultation.teaser .consultation-closing-date {
+  flex: 0 0 10rem;
+  padding-top: 2rem;
+  text-align: center;
+}
+
+.consultation.teaser .consultation-closing-date .h1 {
+  margin-bottom: 0;
+}
+
+.consultation-content {
+  display: flex;
+}
+
+.consultation-label {
+  color: var(--color-accent);
+  font-weight: 700;
+  min-width: 90px;
+  margin-right: 2rem;
+}
+
+
+
+

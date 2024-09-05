@@ -1,0 +1,7 @@
+services:
+  localgov_consultations_notify.notifier:
+    class: Drupal\localgov_consultations_notify\Notifier
+    arguments: ['@queue']
+  localgov_consultations_notify.subscription_handler:
+    class: Drupal\localgov_consultations_notify\SubscriptionHandler
+    arguments: ['@email_factory']

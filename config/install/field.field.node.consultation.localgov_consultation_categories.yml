@@ -1,0 +1,28 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.localgov_consultation_categories
+    - node.type.consultation
+    - taxonomy.vocabulary.consultations
+id: node.consultation.localgov_consultation_categories
+field_name: localgov_consultation_categories
+entity_type: node
+bundle: consultation
+label: Categories
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:taxonomy_term'
+  handler_settings:
+    target_bundles:
+      consultations: consultations
+    sort:
+      field: name
+      direction: asc
+    auto_create: false
+    auto_create_bundle: consultations
+field_type: entity_reference

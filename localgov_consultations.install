@@ -1,0 +1,21 @@
+<?php
+
+/**
+ * Implements hook_update_N();
+ *
+ * Initialise state for consultations notifications.
+ */
+function localgov_consultations_install() {
+  // Initialise last run state.
+  $now = new Drupal\Core\Datetime\DrupalDateTime('now');
+  \Drupal::state()->set('localgov_consultations_process_opens_last_run', $now->getTimestamp());
+  \Drupal::state()->set('localgov_consultations_process_closes_last_run', $now->getTimestamp());
+
+  // Set some default empty configs so things don't get too unhappy.
+  $consultations_config = \Drupal::configFactory()->getEditable('localgov_consultations.templates');
+  $consultations_config->set('date_changed', '')
+    ->set('opened', '')
+    ->set('closed', '')
+    ->save();
+}
+

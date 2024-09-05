@@ -1,0 +1,7 @@
+langcode: en
+status: true
+dependencies: {  }
+id: localgov_consultations_date
+label: 'Localgov Consultations date'
+locked: false
+pattern: 'd F Y'

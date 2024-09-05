@@ -1,0 +1,14 @@
+langcode: en
+status: true
+dependencies: {  }
+id: consultations
+label: Consultations
+description: 'Subscribes the user to notifications from a particular consultation.'
+help: ''
+max_per_user: 0
+max_per_email: 0
+inactive_subscriptions_liftime: 0
+subscription_message: ''
+cancellation_message: ''
+cross_access: true
+form_destination: ''

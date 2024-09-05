@@ -1,0 +1,24 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_form_mode.mailing_list_subscription.block
+    - mailing_list.mailing_list.all_consultations
+id: mailing_list_subscription.all_consultations.block
+targetEntityType: mailing_list_subscription
+bundle: all_consultations
+mode: block
+content:
+  email:
+    type: email_default
+    weight: 0
+    region: content
+    settings:
+      placeholder: 'Email address'
+      size: 60
+    third_party_settings: {  }
+hidden:
+  created: true
+  status: true
+  title: true
+  uid: true

@@ -1,0 +1,11 @@
+localgov_consultations_notify.unsubscribe:
+  path: '/unsubscribe/consultations/{mailing_list_subscription}/{token}'
+  defaults:
+    _form: '\Drupal\localgov_consultations_notify\Form\UnsubscribeForm'
+    _title: 'Unsubscribe from consultation emails'
+  requirements:
+    _custom_access: '\Drupal\localgov_consultations_notify\Controller\UnsubscribeController::access'
+  options:
+    parameters:
+      mailing_list_subscription:
+        type: 'entity:mailing_list_subscription'

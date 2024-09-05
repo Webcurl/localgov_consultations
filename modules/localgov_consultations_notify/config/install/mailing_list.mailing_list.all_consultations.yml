@@ -1,0 +1,14 @@
+langcode: en
+status: true
+dependencies: {  }
+id: all_consultations
+label: 'All Consultations'
+description: 'Subscribes the user to updates on ALL consultations'
+help: ''
+max_per_user: 0
+max_per_email: 1
+inactive_subscriptions_liftime: 0
+subscription_message: 'Success! You have subscribed to updates on all consultations'
+cancellation_message: 'Cancelled! You will no longer receive updates on all consultations.'
+cross_access: false
+form_destination: canonical

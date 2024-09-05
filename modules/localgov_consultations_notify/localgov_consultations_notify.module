@@ -1,0 +1,173 @@
+<?php
+
+/**
+ * @file
+ * Primary module hooks for localgov_consultations_notify module.
+ */
+
+use Drupal\Component\Utility\Html;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Mail\MailManagerInterface;
+use Drupal\Core\Url;
+use Drupal\localgov_consultations_notify\NotificationReason;
+
+/**
+ * Form validate callback.
+ *
+ * @param $form
+ * @param \Drupal\Core\Form\FormStateInterface $form_state
+ */
+function localgov_consultations_notify_subscription_form_validate($form, FormStateInterface &$form_state) : void {
+  // Check if user already subscribed to this consultation.
+  if (empty($form_state->getErrors())) {
+    if ($form['#form_id'] == 'mailing_list_subscription_consultations_block_form') {
+      $mailing_list = 'consultations';
+    }
+    elseif ($form['#form_id'] == 'mailing_list_subscription_all_consultations_block_form') {
+      $mailing_list = 'all_consultations';
+    }
+    else {
+      return;
+    }
+
+    $email = !empty($form_state->getValue('email')) ? Html::escape($form_state->getValue('email')[0]['value']) : '';
+    if (!$email) {
+      $form_state->setError($form['email'], 'Please provide your email address');
+    }
+
+    $entity_query = \Drupal::entityQuery('mailing_list_subscription');
+    $entity_query->condition('email', $email)
+      ->condition('mailing_list', $mailing_list)
+      ->condition('status', 1)
+      ->accessCheck(FALSE);
+
+    if ($mailing_list === 'consultations') {
+      $consultation_nid = \Drupal::routeMatch()->getParameter('node')->id();
+      $entity_query->condition('field_node', $consultation_nid);
+    }
+
+    $results = $entity_query->execute();
+    if (count($results)) {
+      $form_state->setError($form['email'], 'You have already subscribed to this list');
+    }
+  }
+}
+
+
+/**
+ * Implements hook_ENTITY_TYPE_presave().
+ *
+ * @param \Drupal\Core\Entity\EntityInterface $entity
+ * @return void
+ */
+function localgov_consultations_notify_mailing_list_subscription_presave(Drupal\Core\Entity\EntityInterface $entity) {
+  // Set node and title on new subscriptions.
+  if ($entity->isNew()) {
+
+    $mailing_list = $entity->get('mailing_list')->getValue()[0]['target_id'];
+    switch ($mailing_list) {
+      case 'all_consultations': {
+        $entity->set('title', 'All Consultations');
+        break;
+      }
+
+      case 'consultations': {
+        $route_match_node = \Drupal::routeMatch()->getParameter('node');
+        if ($route_match_node && $route_match_node->bundle() === 'consultation') {
+          // We've just created a mailing list subscription from a consultation.
+          // Set the consultation nid on the subscription entity.
+          $entity->set('field_node', $route_match_node->id());
+          $entity->set('title', $route_match_node->getTitle());
+        }
+        break;
+      }
+    }
+  }
+}
+
+
+/**
+ * Implements hook_ENTITY_TYPE_insert().
+ *
+ * Respond to mailing list subscription created.
+ */
+function localgov_consultations_notify_mailing_list_subscription_insert(Drupal\Core\Entity\EntityInterface $entity) {
+  /** @var \Drupal\localgov_consultations_notify\SubscriptionHandler $subscription_handler */
+  $subscription_handler = \Drupal::service('localgov_consultations_notify.subscription_handler');
+  $subscription_handler->onSubscribe($entity);
+}
+
+
+/**
+ * Implements hook_ENTITY_TYPE_update().
+ */
+function localgov_consultations_notify_node_update(\Drupal\node\NodeInterface $entity) : void {
+  if ($entity->bundle() == 'consultation') {
+    // If the dates haven't changed, then we don't need to do anything.
+    // These properties should have been set in our presave hook above.
+    if ($entity->localgov_consultation_start_date->equals($entity->original->localgov_consultation_start_date)
+      && $entity->localgov_consultation_end_date->equals($entity->original->localgov_consultation_end_date)) {
+      return;
+    }
+
+    /** @var \Drupal\localgov_consultations_notify\Notifier $notifier */
+    $notifier = \Drupal::service('localgov_consultations_notify.notifier');
+    $notifier->notifySubscribers($entity, NotificationReason::ConsultationDatesChanged);
+
+    \Drupal::messenger()->addMessage('An email has been scheduled to inform subscribers about the date change');
+  }
+}
+
+
+/**
+ * Implements hook_cron().
+ */
+function localgov_consultations_notify_cron() {
+  \Drupal::service('localgov_consultations_notify.notifier')->processStateChanges();
+}
+
+/**
+ * Implements hook_mail().
+ */
+function localgov_consultations_notify_mail($key, &$message, $params) {
+  $options = [
+    'langcode' => $message['langcode'],
+  ];
+  switch ($key) {
+    case 'localgov_consultations_email_queue':
+      $message['from'] = \Drupal::config('system.site')->get('mail');
+      $message['subject'] = t($params['title'], $options);
+      $message['body'][] = $params['message'];
+      break;
+  }
+}
+
+
+/**
+ * Implements hook_form_alter().
+ */
+function localgov_consultations_form_alter(&$form, FormStateInterface &$form_state) {
+  if (isset($form['#entity_type']) && $form['#entity_type'] == 'mailing_list_subscription') {
+    $form['actions']['submit']['#submit'][] = 'localgov_consultations_form_submit';
+    $form['#validate'][] = 'localgov_consultations_notify_subscription_form_validate';
+  }
+
+  if ($form['#form_id'] == 'mailing_list_anonymous_subscription_access_form') {
+    $form['#submit'][] = 'localgov_consultations_notify_login_request_form_submit';
+  }
+}
+
+/**
+ * Form submit callback.
+ *
+ * @param $form
+ * @param $form_state
+ * @return void
+ */
+function localgov_consultations_notify_login_request_form_submit($form, &$form_state) {
+  // @TODO Confirm whether we still need this.
+  $messenger = \Drupal::messenger();
+  $messenger->deleteByType($messenger::TYPE_STATUS);
+}
+
+

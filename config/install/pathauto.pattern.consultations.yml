@@ -1,0 +1,21 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+id: consultations
+label: Consultations
+type: 'canonical_entities:node'
+pattern: 'consultations/[node:title]'
+selection_criteria:
+  8c97ecf6-15a0-4c37-af72-71e1edfbdf81:
+    id: 'entity_bundle:node'
+    negate: false
+    uuid: 8c97ecf6-15a0-4c37-af72-71e1edfbdf81
+    context_mapping:
+      node: node
+    bundles:
+      consultation: consultation
+selection_logic: and
+weight: -5
+relationships: {  }
